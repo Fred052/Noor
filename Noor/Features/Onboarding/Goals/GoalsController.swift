@@ -173,7 +173,12 @@ class GoalsController: BaseController {
 
     override func configureViewModel() {
         viewModel.onSelectionChanged = { [weak self] in
-            self?.collectionView.reloadData()
+            guard let self else { return }
+            for cell in self.collectionView.visibleCells {
+                guard let goalCell = cell as? GoalCell,
+                      let indexPath = self.collectionView.indexPath(for: goalCell) else { continue }
+                goalCell.updateSelection(self.viewModel.isSelected(at: indexPath.item))
+            }
         }
     }
 

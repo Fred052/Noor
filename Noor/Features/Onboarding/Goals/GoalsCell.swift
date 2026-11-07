@@ -108,7 +108,10 @@ class GoalCell: UICollectionViewCell {
         ringView.configure(minutes: data.minutes, progress: data.progress)
         titleLabel.text = data.title
         detailLabel.text = data.detail
-
+        updateSelection(isSelected)
+    }
+    
+    func updateSelection(_ isSelected: Bool) {
         if isSelected {
             contentView.layer.borderWidth = 1.5
             contentView.layer.borderColor = UIColor.green1.cgColor

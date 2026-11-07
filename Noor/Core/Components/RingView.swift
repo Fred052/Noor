@@ -10,6 +10,9 @@ import UIKit
 class RingView: UIView {
 
     private let lineWidth: CGFloat = 6
+    private var currentMinutes: Int?
+    private var currentProgress: Double?
+    private var lastSize: CGSize = .zero
 
     private lazy var trackLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
@@ -63,6 +66,9 @@ class RingView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        
+        guard bounds.size != lastSize else { return }
+        lastSize = bounds.size
 
         let center = CGPoint(x: bounds.midX, y: bounds.midY)
         let radius = (min(bounds.width, bounds.height) - lineWidth) / 2
@@ -72,12 +78,24 @@ class RingView: UIView {
                                 endAngle: CGFloat.pi * 3 / 2,
                                 clockwise: true)
 
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
         trackLayer.path = path.cgPath
         progressLayer.path = path.cgPath
+        CATransaction.commit()
     }
 
     func configure(minutes: Int, progress: Double) {
+        guard minutes != currentMinutes || progress != currentProgress else { return }
+        currentMinutes = minutes
+        currentProgress = progress
+        
         valueLabel.text = "\(minutes)"
+        
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
         progressLayer.strokeEnd = CGFloat(progress)
+        CATransaction.commit()
+
     }
 }

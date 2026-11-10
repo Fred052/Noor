@@ -12,12 +12,9 @@ class SignInController: BaseController {
     private let viewModel = SignInViewModel()
 
     private lazy var navBar: OnboardingNavBar = {
-        let bar = OnboardingNavBar(step: 0, showSkip: true)
+        let bar = OnboardingNavBar(step: 0)
         bar.onBackTap = { [weak self] in
             self?.navigationController?.popViewController(animated: true)
-        }
-        bar.onSkipTap = {
-            print("Skip -> Paywall")
         }
         return bar
     }()
@@ -331,7 +328,9 @@ class SignInController: BaseController {
     }
 
     @objc private func createAccountTapped() {
-        navigationController?.pushViewController(CreateAccountController(), animated: true)
+        guard let navigationController = self.navigationController else { return }
+        let coordinator = CreateAccountCoordinator(navigationController: navigationController)
+        coordinator.start()
     }
 
     @objc private func continueWithoutTapped() {

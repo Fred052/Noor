@@ -27,16 +27,6 @@ class WelcomeController: BaseController {
         return imageView
     }()
     
-    private lazy var skipButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Skip", for: .normal)
-        button.setTitleColor(.green1, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 15, weight: .medium)
-        button.addTarget(self, action: #selector(skipTapped), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
     private lazy var stepIndicatorView: StepIndicatorView = {
         let indicator = StepIndicatorView(currentStep: 1)
         return indicator
@@ -94,7 +84,6 @@ class WelcomeController: BaseController {
     override func configureConstraints() {
         view.addSubview(illustrationImageView)
         view.addSubview(LogoImageView)
-        view.addSubview(skipButton)
         view.addSubview(stepIndicatorView)
         view.addSubview(titleLabel)
         view.addSubview(subtitleLabel)
@@ -110,12 +99,8 @@ class WelcomeController: BaseController {
             illustrationImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             illustrationImageView.heightAnchor.constraint(equalTo: illustrationImageView.widthAnchor, multiplier: imageRatio),
             
-            skipButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 54),
-            skipButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-            skipButton.heightAnchor.constraint(equalToConstant: 44),
-            
             LogoImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            LogoImageView.centerYAnchor.constraint(equalTo: skipButton.centerYAnchor),
+            LogoImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             LogoImageView.widthAnchor.constraint(equalToConstant: 34),
             LogoImageView.heightAnchor.constraint(equalToConstant: 34),
             
@@ -142,14 +127,15 @@ class WelcomeController: BaseController {
         ])
     }
     
-    @objc private func skipTapped() {
-    }
-    
     @objc private func getStartedButtonTapped() {
-        navigationController?.pushViewController(LanguageController(), animated: true)
+        guard let navigationController = self.navigationController else { return }
+        let coordinator = LanguageCoordinator(navigationController: navigationController)
+        coordinator.start()
     }
     
     @objc private func LoginButtonTapped() {
-        navigationController?.pushViewController(SignInController(), animated: true)
+        guard let navigationController = self.navigationController else { return }
+        let coordinator = SignInCoordinator(navigationController: navigationController)
+        coordinator.start()
     }
 }

@@ -319,8 +319,8 @@ class CreateAccountController: BaseController {
             self?.viewModel.password = text
         }
         
-        viewModel.success = {
-            print("Account created -> Paywall (hələ yoxdur)")
+        viewModel.success = { [ weak self] in 
+            self?.view.window?.rootViewController = MainTabBarController()
         }
         viewModel.error = { [weak self] message in
             self?.showDefaultAlert(message: message)

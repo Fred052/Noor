@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import GoogleSignIn
+import FirebaseCore
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -13,15 +15,28 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        
+        print("clientID:", FirebaseApp.app()?.options.clientID ?? "YOXDUR")
+        print("apiKey:", FirebaseApp.app()?.options.apiKey ?? "YOXDUR")
+        print("bundleID:", FirebaseApp.app()?.options.bundleID ?? "YOXDUR")
+        
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        let navigationController = UINavigationController(rootViewController: WelcomeController())
+        let splash = SplashController()
+        let navigationController = UINavigationController(rootViewController: splash)
         navigationController.setNavigationBarHidden(true, animated: false)
         let window = UIWindow(windowScene: windowScene)
+        
+        splash.onFinish = { [weak navigationController] in
+            navigationController?.setViewControllers([WelcomeController()], animated: false)
+        }
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
         self.window = window
-        
-        
+    }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else { return }
+        GIDSignIn.sharedInstance.handle(url)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

@@ -11,12 +11,9 @@ class GoalsController: BaseController {
     private let viewModel = GoalsViewModel()
 
     private lazy var navBar: OnboardingNavBar = {
-        let bar = OnboardingNavBar(step: 3, showSkip: true)
+        let bar = OnboardingNavBar(step: 3)
         bar.onBackTap = { [weak self] in
             self?.navigationController?.popViewController(animated: true)
-        }
-        bar.onSkipTap = {
-            self.navigationController?.pushViewController(PersonalizeController(), animated: true)
         }
         return bar
     }()
@@ -101,16 +98,6 @@ class GoalsController: BaseController {
         return button
     }()
 
-    private lazy var skipForNowButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Skip for now", for: .normal)
-        button.setTitleColor(.green1, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-        button.addTarget(self, action: #selector(skipForNowTapped), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-
     override func configureConstraints() {
         view.addSubview(navBar)
         view.addSubview(titleLabel)
@@ -120,7 +107,6 @@ class GoalsController: BaseController {
         infoContainerView.addSubview(infoImageView)
         infoContainerView.addSubview(infoLabel)
         view.addSubview(continueButton)
-        view.addSubview(skipForNowButton)
 
         let count = viewModel.numberOfGoals
         let collectionHeight = CGFloat(count) * 96 + CGFloat(count - 1) * 12
@@ -136,17 +122,17 @@ class GoalsController: BaseController {
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
 
             subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            subtitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            subtitleLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            subtitleLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
 
             collectionView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 28),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            collectionView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             collectionView.heightAnchor.constraint(equalToConstant: collectionHeight),
 
             infoContainerView.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 20),
-            infoContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            infoContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            infoContainerView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            infoContainerView.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             infoContainerView.heightAnchor.constraint(equalToConstant: 83),
 
             infoImageView.widthAnchor.constraint(equalToConstant: 22),
@@ -159,15 +145,10 @@ class GoalsController: BaseController {
             infoLabel.leadingAnchor.constraint(equalTo: infoImageView.trailingAnchor, constant: 12),
             infoLabel.trailingAnchor.constraint(equalTo: infoContainerView.trailingAnchor, constant: -24),
 
-            skipForNowButton.heightAnchor.constraint(equalToConstant: 54),
-            skipForNowButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            skipForNowButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            skipForNowButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-
             continueButton.heightAnchor.constraint(equalToConstant: 54),
-            continueButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            continueButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            continueButton.bottomAnchor.constraint(equalTo: skipForNowButton.topAnchor, constant: -8)
+            continueButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            continueButton.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            continueButton.bottomAnchor.constraint(equalTo: infoContainerView.bottomAnchor, constant: 78)
         ])
     }
 
@@ -183,10 +164,9 @@ class GoalsController: BaseController {
     }
 
     @objc private func continueTapped() {
-        navigationController?.pushViewController(PersonalizeController(), animated: true)
-    }
-
-    @objc private func skipForNowTapped() {
+        guard let navigationController = self.navigationController else { return }
+        let coordinator = PersonalizeCoordinator(navigationController: navigationController)
+        coordinator.start()
     }
 }
 

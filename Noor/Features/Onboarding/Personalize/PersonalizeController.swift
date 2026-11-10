@@ -97,16 +97,6 @@ class PersonalizeController: BaseController {
         return button
     }()
 
-    private lazy var decideLaterButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("I’ll decide later", for: .normal)
-        button.setTitleColor(.green1, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-        button.addTarget(self, action: #selector(decideLaterTapped), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-
     override func configureConstraints() {
         view.addSubview(navBar)
         view.addSubview(titleLabel)
@@ -115,7 +105,6 @@ class PersonalizeController: BaseController {
         view.addSubview(infoImageView)
         view.addSubview(infoLabel)
         view.addSubview(createButton)
-        view.addSubview(decideLaterButton)
 
         let count = viewModel.numberOfInterests
         let collectionHeight = CGFloat(count) * 68 + CGFloat(count - 1) * 8
@@ -148,15 +137,10 @@ class PersonalizeController: BaseController {
             infoLabel.leadingAnchor.constraint(equalTo: infoImageView.trailingAnchor, constant: 8),
             infoLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
 
-            decideLaterButton.heightAnchor.constraint(equalToConstant: 54),
-            decideLaterButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            decideLaterButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            decideLaterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-
             createButton.heightAnchor.constraint(equalToConstant: 54),
             createButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             createButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            createButton.bottomAnchor.constraint(equalTo: decideLaterButton.topAnchor, constant: -8)
+            createButton.bottomAnchor.constraint(equalTo: infoLabel.bottomAnchor, constant: 78)
         ])
     }
 
@@ -168,10 +152,6 @@ class PersonalizeController: BaseController {
 
     @objc private func createTapped() {
         let titles = viewModel.selectedInterests.map { $0.title }
-        
-    }
-
-    @objc private func decideLaterTapped() {
         
     }
 }

@@ -181,7 +181,9 @@ class LanguageController: BaseController {
     }
     
     @objc private func continueTapped() {
-        navigationController?.pushViewController(GoalsController(), animated: true)
+        guard let navigationController = self.navigationController else { return }
+        let coordinator = GoalsCoordinator(navigationController: navigationController)
+        coordinator.start()
     }
 }
 

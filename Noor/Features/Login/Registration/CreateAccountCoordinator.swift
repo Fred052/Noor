@@ -16,7 +16,8 @@ class CreateAccountCoordinator: Coordinator {
     }
     
     func start() {
-        let controller = CreateAccountController()
+        let viewModel = CreateAccountViewModel(manager: AuthManager())
+        let controller = CreateAccountController(viewModel: viewModel)
         navigationController.show(controller, sender: nil)
     }
 }

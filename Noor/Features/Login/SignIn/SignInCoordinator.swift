@@ -16,7 +16,8 @@ class SignInCoordinator: Coordinator {
     }
     
     func start() {
-        let controller = SignInController()
+        let viewModel = SignInViewModel(manager: AuthManager())
+        let controller = SignInController(viewModel: viewModel)
         navigationController.show(controller, sender: nil)
     }
 }

@@ -9,7 +9,7 @@ import UIKit
 
 class CreateAccountController: BaseController {
 
-    private let viewModel = CreateAccountViewModel()
+    private let viewModel: CreateAccountViewModel
 
     private lazy var navBar: OnboardingNavBar = {
         let bar = OnboardingNavBar(step: 0, showSkip: true)
@@ -206,7 +206,16 @@ class CreateAccountController: BaseController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
+    
+    init(viewModel: CreateAccountViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func configureUI() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -309,6 +318,13 @@ class CreateAccountController: BaseController {
         passwordField.onTextChanged = { [weak self] text in
             self?.viewModel.password = text
         }
+        
+        viewModel.success = {
+            print("Account created -> Paywall (hələ yoxdur)")
+        }
+        viewModel.error = { [weak self] message in
+            self?.showDefaultAlert(message: message)
+        }
     }
 
     @objc private func dismissKeyboard() {
@@ -316,19 +332,16 @@ class CreateAccountController: BaseController {
     }
 
     @objc private func appleTapped() {
-        
+        viewModel.signInWithApple()
     }
 
     @objc private func googleTapped() {
-        
+        viewModel.signInWithGoogle(presenting: self)
     }
 
     @objc private func createAccountTapped() {
-        if viewModel.canCreateAccount {
-            print("Create account -> Paywall")
-        } else {
-            print("Ad, email ya da şifrə düzgün deyil")
-        }
+        view.endEditing(true)
+        viewModel.createAccount()
     }
 
     @objc private func signInTapped() {

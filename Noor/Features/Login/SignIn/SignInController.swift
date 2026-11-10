@@ -9,7 +9,7 @@ import UIKit
 
 class SignInController: BaseController {
 
-    private let viewModel = SignInViewModel()
+    private let viewModel: SignInViewModel
 
     private lazy var navBar: OnboardingNavBar = {
         let bar = OnboardingNavBar(step: 0)
@@ -202,6 +202,16 @@ class SignInController: BaseController {
         return label
     }()
 
+    
+    init(viewModel: SignInViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func configureUI() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -301,6 +311,17 @@ class SignInController: BaseController {
         passwordField.onTextChanged = { [weak self] text in
             self?.viewModel.password = text
         }
+
+        viewModel.success = {
+            print("Signed in -> Home / Paywall (hələ yoxdur)")
+        }
+        viewModel.error = { [weak self] message in
+            self?.showDefaultAlert(message: message)
+        }
+        viewModel.passwordResetSent = { [weak self] in
+            self?.showDefaultAlert(title: "Check your email",
+                                   message: "We sent you a link to reset your password.")
+        }
     }
 
     @objc private func dismissKeyboard() {
@@ -308,23 +329,20 @@ class SignInController: BaseController {
     }
 
     @objc private func appleTapped() {
-        print("Apple -> Paywall")
+        viewModel.signInWithApple()
     }
 
     @objc private func googleTapped() {
-        print("Google -> Paywall")
+        viewModel.signInWithGoogle(presenting: self)
     }
 
     @objc private func forgotPasswordTapped() {
-        print("Forgot password")
+        viewModel.resetPassword()
     }
 
     @objc private func signInTapped() {
-        if viewModel.canSignIn {
-            print("Sign in -> Home")
-        } else {
-            print("Email ya da şifrə düzgün deyil")
-        }
+        view.endEditing(true)
+        viewModel.signIn()
     }
 
     @objc private func createAccountTapped() {

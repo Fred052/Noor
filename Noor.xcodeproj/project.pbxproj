@@ -21,6 +21,7 @@
 		7F3EBA9D309B5F6700F9F497 /* Exceptions for "Noor" folder in "Noor" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Features/Profile/Views/Untitled.swift,
 				Info.plist,
 			);
 			target = 7F3EBA8A309B5F6600F9F497 /* Noor */;

@@ -10,6 +10,7 @@ import UIKit
 final class MainTabBarController: UITabBarController {
 
     private var homeCoordinator: HomeCoordinator?
+    private var profileCoordinator: ProfileCoordinator?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,13 +83,18 @@ final class MainTabBarController: UITabBarController {
         let coordinator = HomeCoordinator(navigationController: homeNavigation)
         coordinator.start()
         homeCoordinator = coordinator
-
+        
+        let profileNavigation = makeNavigationController(title: "Profile", icon: "tabProfile")
+        let profileCoordinator = ProfileCoordinator(navigationController: profileNavigation)
+        profileCoordinator.start()
+        self.profileCoordinator = profileCoordinator
+        
         viewControllers = [
             homeNavigation,
             makePlaceholderTab(title: "Quran", icon: "tabQuran"),
             makePlaceholderTab(title: "Hifz", icon: "tabHifz"),
             makePlaceholderTab(title: "Library", icon: "tabLibrary"),
-            makePlaceholderTab(title: "Profile", icon: "tabProfile")
+            profileNavigation
         ]
     }
 

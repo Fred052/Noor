@@ -11,4 +11,12 @@ extension UIFont {
     static func newsReader(_ size: CGFloat) -> UIFont {
         return UIFont(name: "Newsreader-Medium", size: size) ?? UIFont.systemFont(ofSize: size)
     }
+    
+    static func serif(_ size: CGFloat) -> UIFont {
+        UIFont(name: "Newsreader-Medium", size: size) ?? .systemFont(ofSize: size, weight: .medium)
+    }
+    
+    static func arabic(_ size: CGFloat) -> UIFont {
+        UIFont(name: "AmiriQuran-Regular", size: size) ?? .systemFont(ofSize: size)
+    }
 }

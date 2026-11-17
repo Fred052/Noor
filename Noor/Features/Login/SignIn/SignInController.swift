@@ -352,6 +352,8 @@ class SignInController: BaseController {
     }
 
     @objc private func continueWithoutTapped() {
-        print("Continue without an account -> Paywall")
+        guard let window = view.window else { return }
+        window.rootViewController = MainTabBarController()
+        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
     }
 }

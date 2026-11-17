@@ -7,7 +7,6 @@
 
 import UIKit
 import GoogleSignIn
-import FirebaseCore
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -15,10 +14,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        
-        print("clientID:", FirebaseApp.app()?.options.clientID ?? "YOXDUR")
-        print("apiKey:", FirebaseApp.app()?.options.apiKey ?? "YOXDUR")
-        print("bundleID:", FirebaseApp.app()?.options.bundleID ?? "YOXDUR")
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let splash = SplashController()

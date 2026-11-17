@@ -9,6 +9,8 @@ import UIKit
 
 final class MainTabBarController: UITabBarController {
 
+    private var homeCoordinator: HomeCoordinator?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTabBar()
@@ -48,14 +50,13 @@ final class MainTabBarController: UITabBarController {
             UIBezierPath(roundedRect: rect, cornerRadius: 15).fill()
         }
     }
-    
+
     private func resizeIcon(named name: String) -> UIImage? {
         guard let image = UIImage(named: name) else {
             return nil
         }
 
         let size = CGSize(width: 24, height: 24)
-
         let renderer = UIGraphicsImageRenderer(size: size)
 
         let resizedImage = renderer.image { _ in
@@ -77,23 +78,34 @@ final class MainTabBarController: UITabBarController {
     }
 
     private func configureTabs() {
+        let homeNavigation = makeNavigationController(title: "Home", icon: "tabHome")
+        let coordinator = HomeCoordinator(navigationController: homeNavigation)
+        coordinator.start()
+        homeCoordinator = coordinator
+
         viewControllers = [
-            makeTab(title: "Home", icon: "tabHome"),
-            makeTab(title: "Quran", icon: "tabQuran"),
-            makeTab(title: "Hifz", icon: "tabHifz"),
-            makeTab(title: "Library", icon: "tabLibrary"),
-            makeTab(title: "Profile", icon: "tabProfile")
+            homeNavigation,
+            makePlaceholderTab(title: "Quran", icon: "tabQuran"),
+            makePlaceholderTab(title: "Hifz", icon: "tabHifz"),
+            makePlaceholderTab(title: "Library", icon: "tabLibrary"),
+            makePlaceholderTab(title: "Profile", icon: "tabProfile")
         ]
     }
 
-    private func makeTab(title: String, icon: String) -> UINavigationController {
-        let navigation = UINavigationController(rootViewController: PlaceholderController(title: title))
+    private func makeNavigationController(title: String, icon: String) -> UINavigationController {
+        let navigation = UINavigationController()
         navigation.setNavigationBarHidden(true, animated: false)
         navigation.tabBarItem = UITabBarItem(
             title: title,
             image: resizeIcon(named: icon),
             selectedImage: nil
         )
+        return navigation
+    }
+
+    private func makePlaceholderTab(title: String, icon: String) -> UINavigationController {
+        let navigation = makeNavigationController(title: title, icon: icon)
+        navigation.setViewControllers([PlaceholderController(title: title)], animated: false)
         return navigation
     }
 }

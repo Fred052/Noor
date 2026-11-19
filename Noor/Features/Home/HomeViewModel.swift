@@ -33,15 +33,35 @@ final class HomeViewModel {
     var avatarLetter: String { String(userName.prefix(1)).uppercased() }
 
     func load() {
-        lastRead = LastRead(surahName: "Surah Al-Baqarah", page: 22, verse: 142, totalVerses: 286)
-        today = TodayReading(doneMinutes: 6, goalMinutes: 10)
+        lastRead = LastRead(
+            surahName: "Surah Al-Baqarah",
+            page: 22,
+            verse: 142,
+            totalVerses: 286
+        )
+        today = TodayReading(
+            doneMinutes: 6,
+            goalMinutes: 10
+        )
         dailyVerse = DailyVerse(arabic: "فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",
                                 translation: "For indeed, with hardship [will be] ease.",
                                 reference: "Ash-Sharh 94:5 · Sahih International")
         activities = [
-            ActivityItem(iconName: "iconBook", title: "Read · Al-Mulk 67:1–5", time: "Yesterday"),
-            ActivityItem(iconName: "iconHeadphones", title: "Listened · Al-Kahf", time: "2 days ago"),
-            ActivityItem(iconName: "iconHifz", title: "Revised · Al-Ikhlas", time: "3 days ago")
+            ActivityItem(
+                iconName: "iconBook",
+                title: "Read · Al-Mulk 67:1–5",
+                time: "Yesterday"
+            ),
+            ActivityItem(
+                iconName: "iconHeadphones",
+                title: "Listened · Al-Kahf",
+                time: "2 days ago"
+            ),
+            ActivityItem(
+                iconName: "iconHifz",
+                title: "Revised · Al-Ikhlas",
+                time: "3 days ago"
+            )
         ]
         nextStep = NextStep(title: "Explore the meaning of 94:5",
                             subtitle: "Chosen because you want to understand the meaning.",

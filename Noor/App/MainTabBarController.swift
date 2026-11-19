@@ -11,6 +11,7 @@ final class MainTabBarController: UITabBarController {
 
     private var homeCoordinator: HomeCoordinator?
     private var profileCoordinator: ProfileCoordinator?
+    private var quranCoordinator: QuranCoordinator?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,18 +90,23 @@ final class MainTabBarController: UITabBarController {
         profileCoordinator.start()
         self.profileCoordinator = profileCoordinator
         
+        let quranNavigation = makeNavigationController(title: "Quran", icon: "tabQuran", hideNavigationBar: false)
+        let quranCoordinator = QuranCoordinator(navigationController: quranNavigation)
+        quranCoordinator.start()
+        self.quranCoordinator = quranCoordinator
+        
         viewControllers = [
             homeNavigation,
-            makePlaceholderTab(title: "Quran", icon: "tabQuran"),
+            quranNavigation,
             makePlaceholderTab(title: "Hifz", icon: "tabHifz"),
             makePlaceholderTab(title: "Library", icon: "tabLibrary"),
             profileNavigation
         ]
     }
 
-    private func makeNavigationController(title: String, icon: String) -> UINavigationController {
+    private func makeNavigationController(title: String, icon: String, hideNavigationBar: Bool = true) -> UINavigationController {
         let navigation = UINavigationController()
-        navigation.setNavigationBarHidden(true, animated: false)
+        navigation.setNavigationBarHidden(hideNavigationBar, animated: false)
         navigation.tabBarItem = UITabBarItem(
             title: title,
             image: resizeIcon(named: icon),

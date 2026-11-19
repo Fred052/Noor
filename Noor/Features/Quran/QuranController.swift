@@ -92,12 +92,15 @@ final class QuranController: BaseController {
     
     override func configureViewModel() {
         viewModel.success = { [weak self] in
-            self?.reloadSurah()
+            self?.reloadSurahs()
         }
-        viewModel.load()
+        viewModel.error = { [weak self] message in
+            self?.showDefaultAlert(message: message)
+        }
+        viewModel.getSurahList()
     }
     
-    private func reloadSurah() {
+    private func reloadSurahs() {
         UIView.performWithoutAnimation {
             collectionView.reloadSections(IndexSet(integer: 1))
         }
@@ -123,7 +126,7 @@ extension QuranController: UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: QuranHeaderCell.identifier, for: indexPath) as! QuranHeaderCell
             cell.configure(chipTitles: viewModel.chipTitles,
                            selectedChipIndex: viewModel.selectedSortIndex,
-                           searchText: viewModel.currentSeachText)
+                           searchText: viewModel.currentSearchText)
             cell.onSearchChange = { [weak self] text in
                 self?.viewModel.search(text)
             }

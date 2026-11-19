@@ -18,7 +18,7 @@ final class QuranCoordinator: Coordinator {
     func start() {
         navigationController.navigationBar.prefersLargeTitles = true
         
-        let viewModel = QuranViewModel()
+        let viewModel = QuranViewModel(manager: SurahManager())
         let controller = QuranController(viewModel: viewModel)
         navigationController.setViewControllers([controller], animated: false)
     }

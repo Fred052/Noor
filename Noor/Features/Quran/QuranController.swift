@@ -97,12 +97,24 @@ final class QuranController: BaseController {
         viewModel.error = { [weak self] message in
             self?.showDefaultAlert(message: message)
         }
+        viewModel.playbackChanged = { [weak self] in
+            self?.updatePlayingState()
+        }
         viewModel.getSurahList()
     }
     
     private func reloadSurahs() {
         UIView.performWithoutAnimation {
             collectionView.reloadSections(IndexSet(integer: 1))
+        }
+    }
+    
+    private func updatePlayingState() {
+        for indexPath in collectionView.indexPathsForVisibleItems where indexPath.section == 1 {
+            guard viewModel.surahs.indices.contains(indexPath.item),
+                  let cell = collectionView.cellForItem(at: indexPath) as? SurahCell else { continue }
+            let number = viewModel.surahs[indexPath.item].number
+            cell.setPlaying(viewModel.isPlaying(surahNumber: number))
         }
     }
     
@@ -137,8 +149,11 @@ extension QuranController: UICollectionViewDataSource {
         }
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SurahCell.identifier, for: indexPath) as! SurahCell
+        let surah = viewModel.surahs[indexPath.item]
         let isLast = indexPath.item == viewModel.surahs.count - 1
-        cell.configure(surah: viewModel.surahs[indexPath.item], showSeperator: !isLast)
+        cell.configure(surah: surah,
+                       showSeperator: !isLast,
+                       isPlaying: viewModel.isPlaying(surahNumber: surah.number))
         return cell
     }
 }
@@ -161,7 +176,7 @@ extension QuranController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard indexPath.section == 1, viewModel.surahs.indices.contains(indexPath.item) else { return }
-        onSurahSelected?(viewModel.surahs[indexPath.item])
+        guard indexPath.section == 1 else { return }
+        viewModel.toggleAudio(at: indexPath.item)
     }
 }

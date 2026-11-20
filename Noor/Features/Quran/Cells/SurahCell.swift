@@ -80,13 +80,20 @@ final class SurahCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setPlaying(_ isPlaying: Bool) {
+        chevronView.image = UIImage(systemName: isPlaying ? "speaker.wave.2.fill" : "chevron.right")
+        chevronView.tintColor = isPlaying ? .green1 : .muted
+        titleLabel.textColor = isPlaying ? .green1 : .ink
+    }
     
-    func configure(surah: Surah, showSeperator: Bool) {
+    
+    func configure(surah: Surah, showSeperator: Bool, isPlaying: Bool) {
         numberLabel.text = "\(surah.number)"
         titleLabel.text = surah.englishName
         subtitleLabel.text = surah.subtitle
         arabicLabel.text = surah.arabicName
         seperator.isHidden = !showSeperator
+        setPlaying(isPlaying)
     }
     
     private func configureUI() {

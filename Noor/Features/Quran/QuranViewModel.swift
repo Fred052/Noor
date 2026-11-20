@@ -11,10 +11,13 @@ final class QuranViewModel {
 
     var success: (() -> Void)?
     var error: ((String) -> Void)?
+    var playbackChanged: (() -> Void)?
 
     private let manager: SurahManagerUseCase
     private var allSurahs: [Surah] = []
     private var searchText = ""
+    
+    private let player = AudioPlayerManager.shared
 
     private(set) var surahs: [Surah] = []
     private(set) var selectedSortIndex = 0
@@ -27,6 +30,8 @@ final class QuranViewModel {
 
     init(manager: SurahManagerUseCase) {
         self.manager = manager
+        configurePlayer()
+        
     }
 
     func getSurahList() {
@@ -50,6 +55,26 @@ final class QuranViewModel {
     func search(_ text: String) {
         searchText = text
         applyFilters()
+    }
+    
+    func toggleAudio(at index: Int) {
+        guard surahs.indices.contains(index) else { return }
+        let number = surahs[index].number
+        let url = CoreHelper.shared.configureAudioURL(surahNumber: number)
+        player.play(surahNumber: number, urlString: url)
+    }
+    
+    func isPlaying(surahNumber: Int) -> Bool {
+        player.currentSurahNumber == surahNumber && player.isPlaying
+    }
+    
+    func configurePlayer() {
+        player.onStateChange = { [weak self] in
+            self?.playbackChanged?()
+        }
+        player.onError = { [weak self]  message in
+            self?.error?(message)
+        }
     }
 
     private func makeSurah(from item: SurahItem) -> Surah? {
